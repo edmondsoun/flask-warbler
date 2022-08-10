@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, MessageForm, CsrfOnlyForm, UserEditForm
-from models import db, connect_db, User, Message
+from models import db, connect_db, User, Message, DEFAULT_IMAGE_URL, DEFAULT_HEADER_IMAGE_URL
 
 load_dotenv()
 
@@ -20,7 +20,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ['DATABASE_URL'].replace("postgres://", "postgresql://"))
 app.config['SQLALCHEMY_ECHO'] = False
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False #Switch to true for redirects
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 toolbar = DebugToolbarExtension(app)
 #``
@@ -45,7 +45,6 @@ def do_login(user):
     """Log in user."""
 
     session[CURR_USER_KEY] = user.id
-
 
 def do_logout():
     """Log out user."""
@@ -127,12 +126,12 @@ def logout():
 
     form = g.csrf_form
 
-
-    if form.validate_on_submit():
+    #check both conditions at once:
+    if form.validate_on_submit() and g.user:
             do_logout()
             flash(f"User logged out!")
             return redirect("/")
-    # no session.pop?
+
 
     else:
         flash("Access unauthorized.", "danger")
@@ -247,17 +246,19 @@ def profile():
     if form.validate_on_submit():
         g.user.username = form.username.data
         g.user.email = form.email.data
-        g.user.image_url = form.image_url.data
-        g.user.header_image_url = form.header_image_url.data
+        #defaults for falsy values from form submission:
+        g.user.image_url = form.image_url.data or DEFAULT_IMAGE_URL
+        g.user.header_image_url = form.header_image_url.data or DEFAULT_HEADER_IMAGE_URL
         g.user.bio = form.bio.data
         g.user.location = form.location.data
-
+        
         if User.authenticate(g.user.username, form.password.data):
+
             db.session.commit()
             return redirect(f"/users/{g.user.id}")
-        else:
-            flash("Incorrect password!")
-            return render_template("users/edit.html", form = form)
+        
+        flash("Incorrect password!")
+
     else:
         return render_template("users/edit.html", form = form)
 
@@ -268,17 +269,23 @@ def delete_user():
 
     Redirect to signup page.
     """
+    
+    form = g.csrf_form
+
+    #check both conditions at once:
+    if form.validate_on_submit() and g.user:
+        do_logout()
+
+        db.session.delete(g.user)
+        db.session.commit()
+
+        return redirect("/signup")
 
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    do_logout()
 
-    db.session.delete(g.user)
-    db.session.commit()
-
-    return redirect("/signup")
 
 
 ##############################################################################
@@ -351,25 +358,13 @@ def homepage():
     """
 
     if g.user:
+        user_following = [u.id for u in g.user.following]
         messages = (Message
                     .query
-                    .filter(Message.user_id.in_(g.user.following),
-                        Message.user_id == g.user.id)
-                    .order_by(Message.timestamp.desc())
+                    .filter((Message.user_id.in_(user_following)) | (Message.user_id == g.user.id))
+                    .order_by(Message.timestamp.desc()) 
                     .limit(100)
                     .all())
-
-                    #need to force g.user.following to be an array
-                    #followers = [u.id for u in g.user.following]
-
-    # curr_on_playlist = [song.id for song in playlist.songs]
-
-    # song_choices =(
-    #     db.session.query(Song.id, Song.title)
-    #         .filter(Song.id.notin_(curr_on_playlist))
-    #         .all())
-
-    # form.song.choices = [(c[0], c[1]) for c in song_choices]
 
         return render_template('home.html', messages=messages)
 
