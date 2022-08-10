@@ -360,6 +360,16 @@ def homepage():
                     .all())
 
                     #need to force g.user.following to be an array
+                    #followers = [u.id for u in g.user.following]
+
+    # curr_on_playlist = [song.id for song in playlist.songs]
+
+    # song_choices =(
+    #     db.session.query(Song.id, Song.title)
+    #         .filter(Song.id.notin_(curr_on_playlist))
+    #         .all())
+
+    # form.song.choices = [(c[0], c[1]) for c in song_choices]
 
         return render_template('home.html', messages=messages)
 
