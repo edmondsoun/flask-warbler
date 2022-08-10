@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm, MessageForm, CsrfOnlyForm
+from forms import UserAddForm, LoginForm, MessageForm, CsrfOnlyForm, UserEditForm
 from models import db, connect_db, User, Message
 
 load_dotenv()
@@ -52,7 +52,7 @@ def do_logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
-       
+
 @app.before_request
 def add_csrf_form_to_all_pages():
     """Before every route, add CSRF-only form to global object."""
@@ -126,7 +126,7 @@ def logout():
     """Handle logout of user and redirect to homepage."""
 
     form = g.csrf_form
-    
+
 
     if form.validate_on_submit():
             do_logout()
@@ -135,7 +135,7 @@ def logout():
     # no session.pop?
 
     else:
-        raise Unauthorized()
+        flash("Access unauthorized.", "danger")
 
 ##############################################################################
 # General user routes:
@@ -238,7 +238,28 @@ def stop_following(follow_id):
 def profile():
     """Update profile for current user."""
 
-    # IMPLEMENT THIS
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    form = UserEditForm(obj=g.user)
+
+    if form.validate_on_submit():
+        g.user.username = form.username.data
+        g.user.email = form.email.data
+        g.user.image_url = form.image_url.data
+        g.user.header_image_url = form.header_image_url.data
+        g.user.bio = form.bio.data
+        g.user.location = form.location.data
+
+        if User.authenticate(g.user.username, form.password.data):
+            db.session.commit()
+            return redirect(f"/users/{g.user.id}")
+        else:
+            flash("Incorrect password!")
+            return render_template("users/edit.html", form = form)
+    else:
+        return render_template("users/edit.html", form = form)
 
 
 @app.post('/users/delete')
