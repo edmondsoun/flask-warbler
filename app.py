@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, MessageForm, CsrfOnlyForm, UserEditForm
-from models import db, connect_db, User, Message, DEFAULT_IMAGE_URL, DEFAULT_HEADER_IMAGE_URL
+from models import db, connect_db, User, Message, DEFAULT_IMAGE_URL, DEFAULT_HEADER_IMAGE_URL, LikedMessage
 
 load_dotenv()
 
@@ -251,12 +251,12 @@ def profile():
         g.user.header_image_url = form.header_image_url.data or DEFAULT_HEADER_IMAGE_URL
         g.user.bio = form.bio.data
         g.user.location = form.location.data
-        
+
         if User.authenticate(g.user.username, form.password.data):
 
             db.session.commit()
             return redirect(f"/users/{g.user.id}")
-        
+
         flash("Incorrect password!")
 
     else:
@@ -269,7 +269,7 @@ def delete_user():
 
     Redirect to signup page.
     """
-    
+
     form = g.csrf_form
 
     #check both conditions at once:
@@ -362,7 +362,7 @@ def homepage():
         messages = (Message
                     .query
                     .filter((Message.user_id.in_(user_following)) | (Message.user_id == g.user.id))
-                    .order_by(Message.timestamp.desc()) 
+                    .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
 
