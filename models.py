@@ -87,7 +87,8 @@ class User(db.Model):
 
     liked_messages = db.relationship(
         'Message',
-        secondary="likes")
+        secondary="likes",
+        backref="users_liked")
 
 
 
@@ -151,6 +152,7 @@ class User(db.Model):
     def is_liked(self, message):
         """Is this message liked by self?"""
 
+        #use a set/make a set once
         found_liked = [m for m in self.liked_messages if m == message]
         return len(found_liked) == 1
 
@@ -181,6 +183,7 @@ class Message(db.Model):
         nullable=False,
     )
 
+#change to Like
 class LikedMessage(db.Model):
     """Liked messages for individual user """
 

@@ -374,6 +374,7 @@ def like_message(message_id):
         flash("You can't like your own messages!", "danger")
     else: 
         g.user.liked_messages.append(msg)
+        #add flash
         db.session.commit()
 
     return redirect("/")
