@@ -56,15 +56,19 @@
               <a href="/users/{{ msg.user.id }}">@{{ msg.user.username }}</a>
               <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
               <p>{{ msg.text }}</p>
+              <div class = 'fav-star'> 
+              {% if msg not in g.user.messages %}
               {% if g.user.is_liked(msg) %}
-              <form method="POST" action="/messages/{{ msg.id }}/unlike" style="z-index:6;">
+              <form method="POST" action="/messages/{{ msg.id }}/unlike">
                 <button type="submit"><i class="bi bi-star-fill"></i></button>
               </form>
               {% else %}
-              <form method="POST" action="/messages/{{ msg.id }}/like" style="z-index:6;">
+              <form method="POST" action="/messages/{{ msg.id }}/like">
                 <button type="submit"><i class="bi bi-star"></i></button>
               </form>
               {% endif %}
+              {% endif %}
+              </div>
             </div>
           </li>
         {% endfor %}

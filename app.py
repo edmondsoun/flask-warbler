@@ -233,6 +233,21 @@ def stop_following(follow_id):
     return redirect(f"/users/{g.user.id}/following")
 
 
+##SHOW LIKE PAGE
+@app.get('/users/<int:user_id>/likes')
+def show_likes(user_id):
+    """Show list of warbles this person has liked."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    user = User.query.get_or_404(user_id)
+    return render_template('users/liked_messages.html', user=user)
+
+
+
+
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
     """Update profile for current user."""
@@ -346,29 +361,39 @@ def delete_message(message_id):
 
 @app.post('/messages/<int:message_id>/like')
 def like_message(message_id):
-    """ ! """
+    """ Add a warble to a user's liked warbles.
+    Redirects on success or if a user attempts to like their own warble."""
 
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
     msg = Message.query.get_or_404(message_id)
-    g.user.liked_messages.append(msg)
-    db.session.commit()
+    
+    if msg in g.user.messages:
+        flash("You can't like your own messages!", "danger")
+    else: 
+        g.user.liked_messages.append(msg)
+        db.session.commit()
 
     return redirect("/")
 
 @app.post('/messages/<int:message_id>/unlike')
 def unlike_message(message_id):
-    """ ! """
+    """ Remove a warble from a user's liked warbles.
+    Redirects on success or if a user attempts to unlike their own warble."""
 
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
     msg = Message.query.get_or_404(message_id)
-    g.user.liked_messages.remove(msg)
-    db.session.commit()
+    
+    if msg in g.user.messages:
+        flash("You can't unlike your own messages!", "danger")
+    else: 
+        g.user.liked_messages.remove(msg)
+        db.session.commit()
 
     return redirect("/")
 
