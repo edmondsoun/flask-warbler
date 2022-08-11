@@ -233,7 +233,6 @@ def stop_following(follow_id):
     return redirect(f"/users/{g.user.id}/following")
 
 
-##SHOW LIKE PAGE
 @app.get('/users/<int:user_id>/likes')
 def show_likes(user_id):
     """Show list of warbles this person has liked."""
@@ -369,13 +368,14 @@ def like_message(message_id):
         return redirect("/")
 
     msg = Message.query.get_or_404(message_id)
-    
+
     if msg in g.user.messages:
         flash("You can't like your own messages!", "danger")
-    else: 
+    else:
         g.user.liked_messages.append(msg)
         #add flash
         db.session.commit()
+        flash("Warble liked!", "success")
 
     return redirect("/")
 
@@ -389,12 +389,13 @@ def unlike_message(message_id):
         return redirect("/")
 
     msg = Message.query.get_or_404(message_id)
-    
+
     if msg in g.user.messages:
         flash("You can't unlike your own messages!", "danger")
-    else: 
+    else:
         g.user.liked_messages.remove(msg)
         db.session.commit()
+        flash("Warble removed from likes.", "success")
 
     return redirect("/")
 
