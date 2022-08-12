@@ -25,11 +25,11 @@
           {% if message not in g.user.messages %}
           {% if g.user.is_liked(message) %}
           <form method="POST" action="/messages/{{ message.id }}/unlike">
-            <button type="submit"><i class="bi bi-star-fill"></i></button>
+            <button type="submit" class="btn btn-link"><i class="bi bi-star-fill"></i></button>
           </form>
           {% else %}
           <form method="POST" action="/messages/{{ message.id }}/like">
-            <button type="submit"><i class="bi bi-star"></i></button>
+            <button type="submit" class="btn btn-link"><i class="bi bi-star"></i></button>
           </form>
           {% endif %}
           {% endif %}
