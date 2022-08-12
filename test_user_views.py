@@ -28,10 +28,12 @@ class UserBaseViewTestCase(TestCase):
         u2 = User.signup("u2", "u2@email.com", "password", None)
         db.session.flush()
 
+        #use ORM 
         m1 = Message(text="m1-text", user_id=u1.id)
         db.session.add_all([m1])
         db.session.commit()
-
+        
+        #use ORM (also tests db relationship)
         lm1 = Like(user_id = u2.id, message_id=m1.id )
         db.session.add_all([lm1])
         db.session.commit()
@@ -166,7 +168,9 @@ class UserProfileViewTestCase(UserBaseViewTestCase):
                 
             resp = c.post('/users/delete', follow_redirects=True)
             html = resp.get_data(as_text=True)
-        
+
+            #test route for 404 
+            #instead of querying database
             all_user_ids = db.session.query(User.id).all()
             
             self.assertEqual(resp.status_code, 200)
@@ -212,7 +216,8 @@ class UserFollowViewTestCase(UserBaseViewTestCase):
         with self.client as c:
             with c.session_transaction() as sess:
                 sess[CURR_USER_KEY] = self.u1_id
-                
+            
+            #use ORM
             new_follow = Follows(user_being_followed_id=self.u2_id, user_following_id=self.u1_id)
             db.session.add(new_follow)
             db.session.commit()

@@ -164,7 +164,6 @@ class MessageLikingViewTestCase(MessageBaseViewTestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn("You can&#39;t like your own messages!", html)
-            #????????? ? ? what is the better way to deal with '
 
     def test_liking_logged_out(self):
         """Test that a message cannot be liked when logged out."""
@@ -207,3 +206,4 @@ class MessageLikingViewTestCase(MessageBaseViewTestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn("Access unauthorized.", html)
 
+#install Coverage

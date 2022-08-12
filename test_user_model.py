@@ -68,6 +68,7 @@ class UserModelTestCase(TestCase):
         u1 = User.query.get(self.u1_id)
         u2 = User.query.get(self.u2_id)
 
+    #u1.followers.append(u2)
         new_follow = Follows(user_following_id = u1.id,
             user_being_followed_id = u2.id)
         db.session.add(new_follow)
@@ -88,6 +89,7 @@ class UserModelTestCase(TestCase):
 
         self.assertFalse(result)
 
+#test_is_followed_by_user (in case true/false changed)
     def test_is_followed_by_true(self):
         """ Test whether is_followed_by method returns true when user2 is
         following user1"""
@@ -146,7 +148,7 @@ class UserModelTestCase(TestCase):
 
         self.assertEqual(test, u1)
 
-
+#could be one grouping
     def test_user_authenticate_fail_on_username(self):
         """ Given an incorrect username, User.authenticate returns false. """
 
