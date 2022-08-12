@@ -1,1 +1,3 @@
 # ASK ABOUT ADDING MESSAGES WHILE LOGGED IN AS A DIFFERENT USER??????
+
+# bring up in stand up
