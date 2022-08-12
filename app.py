@@ -58,7 +58,9 @@ def add_csrf_form_to_all_pages():
 
     g.csrf_form = CsrfOnlyForm()
 
-
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
 
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -226,7 +228,7 @@ def stop_following(follow_id):
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    followed_user = User.query.get(follow_id)
+    followed_user = User.query.get_or_404(follow_id)
     g.user.following.remove(followed_user)
     db.session.commit()
 
@@ -271,7 +273,7 @@ def profile():
         else:
             flash("Incorrect password!")
 
-    
+
     return render_template("users/edit.html", form = form)
 
 

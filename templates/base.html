@@ -11,7 +11,7 @@
   <script src="https://unpkg.com/popper"></script>
   <script src="https://unpkg.com/bootstrap"></script>
 
-  <link rel="stylesheet" 
+  <link rel="stylesheet"
         href="https://www.unpkg.com/bootstrap-icons/font/bootstrap-icons.css">
   <link rel="stylesheet" href="/static/stylesheets/style.css">
   <link rel="shortcut icon" href="/static/favicon.ico">
@@ -56,13 +56,13 @@
             <img src="{{ g.user.image_url }}" alt="{{ g.user.username }}">
           </a>
         </li>
-        <li><a href="/messages/new">New Message</a></li>
-        
+        <li><a href="/messages/new" class="btn btn-link">New Message</a></li>
+
         <!-- also need link? see lecture notes? -->
         <li>
           <form action="/logout" method="POST">
             {{ g.csrf_form.hidden_tag() }}
-            <button>Log Out</button>
+            <button id="logout" type="submit" class="btn btn-link">Log Out</button>
           </form>
         </li>
       {% endif %}
