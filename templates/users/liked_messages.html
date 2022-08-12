@@ -2,6 +2,7 @@
 {% block user_details %}
 <div class="col-sm-6">
     <ul class="list-group" id="messages">
+        <!--TESTING LIKED MESSAGES-->
 
         {% for message in user.liked_messages %}
         {% if message not in g.user.messages %}

@@ -64,11 +64,13 @@
             </form>
             {% elif g.user %}
             {% if g.user.is_following(user) %}
+            <!--FOR TESTING: NOT YOUR PROFILE-->
             <form method="POST"
                   action="/users/stop-following/{{ user.id }}">
               <button class="btn btn-primary">Unfollow</button>
             </form>
             {% else %}
+            <!--FOR TESTING: NOT YOUR PROFILE-->
             <form method="POST" action="/users/follow/{{ user.id }}">
               <button class="btn btn-outline-primary">Follow</button>
             </form>

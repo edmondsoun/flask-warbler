@@ -179,8 +179,8 @@ class Message(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
-        nullable=False,
+        db.ForeignKey('users.id', ondelete="cascade")
+        #no nulls if you want to cascade
     )
 
 #change to Like

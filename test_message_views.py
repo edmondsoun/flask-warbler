@@ -206,3 +206,4 @@ class MessageLikingViewTestCase(MessageBaseViewTestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn("Access unauthorized.", html)
+

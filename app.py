@@ -245,8 +245,6 @@ def show_likes(user_id):
     return render_template('users/liked_messages.html', user=user)
 
 
-
-
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
     """Update profile for current user."""
@@ -270,11 +268,12 @@ def profile():
 
             db.session.commit()
             return redirect(f"/users/{g.user.id}")
+        else:
+            flash("Incorrect password!")
 
-        flash("Incorrect password!")
+    
+    return render_template("users/edit.html", form = form)
 
-    else:
-        return render_template("users/edit.html", form = form)
 
 
 @app.post('/users/delete')
@@ -293,6 +292,7 @@ def delete_user():
         db.session.delete(g.user)
         db.session.commit()
 
+        flash("User deleted!", "danger")
         return redirect("/signup")
 
     if not g.user:
