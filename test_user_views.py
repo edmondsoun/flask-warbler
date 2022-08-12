@@ -7,7 +7,7 @@
 import os
 from unittest import TestCase
 
-from models import db, Message, User, LikedMessage, Follows
+from models import db, Message, User, Like, Follows
 
 os.environ['DATABASE_URL'] = "postgresql:///warbler_test"
 
@@ -32,7 +32,7 @@ class UserBaseViewTestCase(TestCase):
         db.session.add_all([m1])
         db.session.commit()
 
-        lm1 = LikedMessage(user_id = u2.id, message_id=m1.id )
+        lm1 = Like(user_id = u2.id, message_id=m1.id )
         db.session.add_all([lm1])
         db.session.commit()
 

@@ -8,7 +8,7 @@
 import os
 from unittest import TestCase
 
-from models import db, Message, User, LikedMessage
+from models import db, Message, User, Like
 
 # BEFORE we import our app, let's set an environmental variable
 # to use a different database for tests (we need to do this
@@ -182,7 +182,7 @@ class MessageLikingViewTestCase(MessageBaseViewTestCase):
                 sess[CURR_USER_KEY] = self.u2_id
 
             #like a message to be unliked
-            liked = LikedMessage(user_id = self.u2_id, message_id=self.m1_id)
+            liked = Like(user_id = self.u2_id, message_id=self.m1_id)
             db.session.add(liked)
             db.session.commit()
 
@@ -197,7 +197,7 @@ class MessageLikingViewTestCase(MessageBaseViewTestCase):
         with self.client as c:
 
             #like a message to be unliked
-            liked = LikedMessage(user_id = self.u2_id, message_id=self.m1_id)
+            liked = Like(user_id = self.u2_id, message_id=self.m1_id)
             db.session.add(liked)
             db.session.commit()
 

@@ -1,4 +1,4 @@
-"""Message and LikedMessage model tests."""
+"""Message and Like model tests."""
 
 # run these tests like:
 #
@@ -8,7 +8,7 @@
 import os
 from unittest import TestCase
 
-from models import db, User, Message, Follows, LikedMessage
+from models import db, User, Message, Follows, Like
 #from sqlalchemy.exc import IntegrityError
 
 os.environ['DATABASE_URL'] = "postgresql:///warbler_test"
@@ -62,7 +62,7 @@ class MessageModelTestCase(TestCase):
 
 ###################
 
-class LikedMessageModelTestCase(TestCase):
+class LikeModelTestCase(TestCase):
     def setUp(self):
         User.query.delete()
 
@@ -84,7 +84,7 @@ class LikedMessageModelTestCase(TestCase):
         self.m1_id = m1.id
         self.m2_id = m2.id
 
-        liked_message1 = LikedMessage(user_id=self.u1_id, message_id=self.m2_id)
+        liked_message1 = Like(user_id=self.u1_id, message_id=self.m2_id)
 
         db.session.add(liked_message1)
         db.session.commit()
@@ -97,7 +97,7 @@ class LikedMessageModelTestCase(TestCase):
     def test_liked_message_model(self):
         """Test user has a liked message and message matches correct message ID."""
 
-        liked_message1 = LikedMessage.query.filter_by(user_id=self.u1_id).one()
+        liked_message1 = Like.query.filter_by(user_id=self.u1_id).one()
 
         self.assertEqual(liked_message1.message_id, self.m2_id)
         self.assertNotEqual(liked_message1.message_id, self.m1_id)

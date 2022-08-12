@@ -184,7 +184,7 @@ class Message(db.Model):
     )
 
 #change to Like
-class LikedMessage(db.Model):
+class Like(db.Model):
     """Liked messages for individual user """
 
     __tablename__ = 'likes'
