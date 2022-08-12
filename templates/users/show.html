@@ -15,12 +15,13 @@
       </a>
 
       <div class="message-area">
+        <!--This is a test message {{ message.id }}-->
         <a href="/users/{{ user.id }}">@{{ user.username }}</a>
         <span class="text-muted">
               {{ message.timestamp.strftime('%d %B %Y') }}
             </span>
         <p>{{ message.text }}</p>
-        <div class = 'fav-star'> 
+        <div class = 'fav-star'>
           {% if message not in g.user.messages %}
           {% if g.user.is_liked(message) %}
           <form method="POST" action="/messages/{{ message.id }}/unlike">

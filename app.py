@@ -353,8 +353,12 @@ def delete_message(message_id):
         return redirect("/")
 
     msg = Message.query.get_or_404(message_id)
-    db.session.delete(msg)
-    db.session.commit()
+    if msg not in g.user.messages:
+        flash("You can't delete someone else's message!", "danger")
+    else:
+        db.session.delete(msg)
+        db.session.commit()
+        flash("Warble deleted.", "success")
 
     return redirect(f"/users/{g.user.id}")
 
